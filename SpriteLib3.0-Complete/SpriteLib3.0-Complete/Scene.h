@@ -3,6 +3,7 @@
 
 #include "JSON.h"
 #include "ECS.h"
+#include "Timer.h"
 #include "Xinput.h"
 #include <SDL2/SDL.h>
 
@@ -22,7 +23,7 @@ public:
 	//init, as each scene's contents will be different
 	virtual void InitScene(float windowWidth, float windowHeight);
 
-	virtual void Update() {}
+	virtual void Update();
 
 	//Gamepad Input
 	//Because these are virtual you can override them in your inherited classes.
@@ -74,6 +75,11 @@ protected:
 
 	entt::registry* m_sceneReg = nullptr;	
 	std::string m_name = "Default Name";
+
+
+private:
+	//Hello world entity number
+	int m_helloWorldSign;
 };
 
 #ifndef __SCENEJSON_H__

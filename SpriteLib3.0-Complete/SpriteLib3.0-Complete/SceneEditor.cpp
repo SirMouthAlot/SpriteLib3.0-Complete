@@ -150,7 +150,8 @@ void SceneEditor::CreateEditor(entt::registry * reg, Scene* scene)
 					{
 						auto& tempSpr = reg->get<Sprite>(m_currentEntityNum);
 						float size[] = { float(tempSpr.GetWidth()), float(tempSpr.GetHeight()) };
-
+						float transparency = tempSpr.GetTransparency();
+						
 						ImGui::Text(("File Name: " + tempSpr.GetFileName()).c_str());
 
 						if (ImGui::DragFloat2("Sprite Size", size, 1.0f, 1.f, 1000.f))
@@ -159,6 +160,14 @@ void SceneEditor::CreateEditor(entt::registry * reg, Scene* scene)
 							tempSpr.SetHeight(int(size[1]));
 						}
 
+						//TRANSPARENCY EXAMPLE
+						if (ImGui::DragFloat("Sprite Transparency", &transparency, 0.01f, 0.01f, 1.0f))
+						{
+							//Update transparency
+							tempSpr.SetTransparency(transparency);
+						}
+
+						
 						ImGui::Text(("Bottom left ( " + std::to_string(tempSpr.GetBottomLeft().x) + ", " + std::to_string(tempSpr.GetBottomLeft().y)
 							+ " )").c_str());
 						ImGui::Text(("Top Right (" + std::to_string(tempSpr.GetTopRight().x) + ", " + std::to_string(tempSpr.GetTopRight().y)

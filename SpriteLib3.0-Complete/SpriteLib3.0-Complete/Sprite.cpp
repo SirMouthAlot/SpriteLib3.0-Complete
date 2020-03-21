@@ -2,8 +2,10 @@
 
 GLuint Sprite::m_spritePlaneVertVBO = GL_NONE;
 
-Sprite::Sprite(std::string& fileName, int width, int height)
+Sprite::Sprite(std::string& fileName, int width, int height, float transparency)
 {
+	//Set transparency
+	m_transparency = transparency;
 	//Loads the sprite
 	LoadSprite(fileName, width, height);
 }
@@ -21,9 +23,9 @@ bool Sprite::LoadSprite(std::string& fileName, int width, int height, bool anima
 		InitSpritePlane(animated, ((anim == nullptr) ? -1 : anim->GetUVVBO()));
 		m_spritePlaneInit = true;
 	}
-	
+
 	(anim == nullptr) ? void() : anim->SetVAO(m_spritePlaneVAO);
-	
+
 	//Set the file name
 	m_fileName = fileName;
 
@@ -81,6 +83,16 @@ void Sprite::Unbind(int textureSlot) const
 	glActiveTexture(GL_TEXTURE0 + textureSlot);
 	//Unbinds texture
 	Unbind();
+}
+
+void Sprite::SetTransparency(float transparency)
+{
+	m_transparency = transparency;
+}
+
+float Sprite::GetTransparency()
+{
+	return m_transparency;
 }
 
 void Sprite::SetWidth(int width)
@@ -183,7 +195,7 @@ void Sprite::InitSpritePlane(bool animated, GLuint uvVBO)
 	};
 	int texCoordSize = 6 * 2 * sizeof(float);
 
-	
+
 	//Creates a new VAO (able to be unloaded upon program termination)
 	m_spritePlaneVAO = VertexManager::CreateVAO();
 	glBindVertexArray(m_spritePlaneVAO);
@@ -191,7 +203,7 @@ void Sprite::InitSpritePlane(bool animated, GLuint uvVBO)
 	//Enables slot 0 and 1
 	glEnableVertexAttribArray(0); //vertices
 	glEnableVertexAttribArray(1); //UV coordinates
-	
+
 	//Creates a new VBO (able to be unloaded upon program termination)
 	if (!animated)
 		m_spritePlaneUVVBO = VertexManager::CreateVBO();
@@ -199,9 +211,9 @@ void Sprite::InitSpritePlane(bool animated, GLuint uvVBO)
 		m_spritePlaneUVVBO = uvVBO;
 
 	//Pushes away the warnings
-	#pragma warning(push)
-	#pragma warning(disable : 4312)
-	//Bind Vert VBO
+#pragma warning(push)
+#pragma warning(disable : 4312)
+//Bind Vert VBO
 	glBindBuffer(GL_ARRAY_BUFFER, m_spritePlaneVertVBO);
 	//Sets the vertex attributes
 	glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(0));			//send vertex attributes
@@ -212,9 +224,9 @@ void Sprite::InitSpritePlane(bool animated, GLuint uvVBO)
 		glBufferData(GL_ARRAY_BUFFER, texCoordSize, VBO_DATA, GL_DYNAMIC_DRAW);
 	//Sets the uv attributes
 	glVertexAttribPointer((GLuint)1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(0));		//send uv attributes
-	#pragma warning(pop)
+#pragma warning(pop)
 
-	//Unbinds the buffers
+//Unbinds the buffers
 	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 	glBindVertexArray(GL_NONE);
 }

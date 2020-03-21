@@ -61,6 +61,34 @@ void Scene::InitScene(float windowWidth, float windowHeight)
 		ECS::SetUpIdentifier(entity, bitHolder, "Horizontal Scrolling Cam");
 		ECS::SetIsMainCamera(entity, true);
 	}
+
+	//Setup new Entity
+	{
+		//Creates entity
+		auto entity = ECS::CreateEntity();
+		m_helloWorldSign = entity;
+
+		//Add components
+		ECS::AttachComponent<Sprite>(entity);
+		ECS::AttachComponent<Transform>(entity);
+
+		//Sets up components
+		std::string fileName = "HelloWorld.png";
+		ECS::GetComponent<Sprite>(entity).LoadSprite(fileName, 100, 60);
+		ECS::GetComponent<Sprite>(entity).SetTransparency(0.5f);
+		ECS::GetComponent<Transform>(entity).SetPosition(vec3(0.f, 0.f, 0.f));
+
+		//Sets up the Identifier
+		unsigned int bitHolder = EntityIdentifier::SpriteBit() | EntityIdentifier::TransformBit();
+		ECS::SetUpIdentifier(entity, bitHolder, "Hello world");
+	}
+}
+
+void Scene::Update()
+{
+	auto& tempSpr = m_sceneReg->get<Sprite>(m_helloWorldSign);
+	
+	tempSpr.SetTransparency((0.5 * sin(Timer::time * 3.f)) + 0.5f);
 }
 
 entt::registry* Scene::GetScene() const
